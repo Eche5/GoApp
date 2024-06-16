@@ -58,7 +58,10 @@ func main() {
 		Handler: router,
 		Addr:    ":" + portString,
 	}
-	log.Printf("Serving on port: %s\n", portString )
-	log.Fatal(srv.ListenAndServe())
+	fmt.Printf("Server starting on PORT:%v", portString)
+	err = srv.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
