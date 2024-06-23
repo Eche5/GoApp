@@ -3,13 +3,14 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/Eche5/rssagg/internal/database"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
-	"log"
-	"net/http"
-	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -51,9 +52,12 @@ func main() {
 	v1Router.Get("/ready", handlerReadiness)
 	v1Router.Get("/err", handlerError)
 	v1Router.Post("/users", apiCfg.handlerCreateUsers)
-	v1Router.Get("/users", apiCfg.handlerGetUser)
+	v1Router.Get("/users", apiCfg.middlewareAuth(apiCfg.handlerGetUser))
+	v1Router.Get("/feeds", apiCfg.handlerGetAllFeeds)
+
 	v1Router.Get("/AllUsers", apiCfg.handlerGetAllUsers)
 	v1Router.Delete("/user", apiCfg.handlerDeleteUser)
+	v1Router.Post("/feeds", apiCfg.middlewareAuth(apiCfg.handlerCreateFeed))
 
 	router.Mount("/v1", v1Router)
 
