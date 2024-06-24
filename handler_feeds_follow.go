@@ -48,21 +48,21 @@ func (apiCfg *apiConfig) handlerGetFeedToFollow(w http.ResponseWriter, r *http.R
 }
 
 func (apiCfg *apiConfig) handlerDeleteFeedToFollow(w http.ResponseWriter, r *http.Request, user database.User) {
-	feedFollowIDStr := chi.URLParam(r, "feedfollowID")
-
-	feedfollowID, err := uuid.Parse(feedFollowIDStr)
+	feedFollowIDStr := chi.URLParam(r, "feedFollowID")
+	feedFollowID, err := uuid.Parse(feedFollowIDStr)
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("couldn't parse Feeds folllow:%v", err))
+		respondWithError(w, http.StatusBadRequest, "Invalid feed follow ID")
 		return
 	}
 
 	err = apiCfg.DB.DeleteFeedsToFollow(r.Context(), database.DeleteFeedsToFollowParams{
-		ID:     feedfollowID,
 		UserID: user.ID,
+		ID:     feedFollowID,
 	})
 	if err != nil {
-		respondWithError(w, 400, fmt.Sprintf("Error Deleting Feeds folllow:%v", err))
+		respondWithError(w, http.StatusInternalServerError, "Couldn't create feed follow")
 		return
 	}
-	respondWithJSON(w, 200, fmt.Sprintf("error:%v",err))
+
+	respondWithJSON(w, http.StatusOK, struct{}{})
 }

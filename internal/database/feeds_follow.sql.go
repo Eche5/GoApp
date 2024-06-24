@@ -48,7 +48,6 @@ func (q *Queries) CreateFeedFollow(ctx context.Context, arg CreateFeedFollowPara
 const deleteFeedsToFollow = `-- name: DeleteFeedsToFollow :exec
 DELETE FROM feeds_follows
 WHERE id = $1 AND user_id = $2
-RETURNING id
 `
 
 type DeleteFeedsToFollowParams struct {
